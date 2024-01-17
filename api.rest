@@ -1,0 +1,34 @@
+###
+GET http://localhost:4000/api/comandas
+###
+POST http://localhost:4000/api/pedidos
+Content-Type: application/json
+
+{
+    "idcomanda": 2,
+    "nombrecliente": "Miguelito",
+    "alimentoconsumir": "Hamburguesita",
+    "cantidad": 2,
+    "bebida": "Limonada",
+    "cantidadbebida": 1,
+    "status": "Pendiente"
+}
+
+###
+GET http://localhost:4000/api/pedidos/3
+
+###
+PUT http://localhost:4000/api/pedidos/4
+Content-Type: application/json
+
+{
+    "idcomanda": 1,
+    "nombrecliente": "Miguelito",
+    "alimentoconsumir": "Hamburguesita",
+    "cantidad": 2,
+    "bebida": "Beer",
+    "cantidadbebida": 1
+}
+
+###
+DELETE http://localhost:4000/api/pedidos/11
