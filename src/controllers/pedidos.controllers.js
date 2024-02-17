@@ -17,17 +17,17 @@ pedidosctrl.getPedidos = async (req, res) => {
 
   pedidosctrl.createPedido = async (req, res) => {
     try {
-      const { idComanda, nombrecliente, alimentoconsumir, cantidad, bebida, cantidadbebida, status, tipopago, propina, correo} = req.body;
+      const { alimentoconsumir, cantidad, precio_alimento, bebida, cantidad_bebida, precio_bebida, tipopago, propina, numeromesa, estatus} = req.body;
       console.log(req.body);  
       // Verifica si los campos necesarios están presentes en la solicitud
-      if (!idComanda || !nombrecliente || !alimentoconsumir || !cantidad || !bebida || !cantidadbebida || !status || !tipopago || !propina || !correo) {
+      if (!alimentoconsumir || !cantidad || !precio_alimento || !bebida || !cantidad_bebida || !precio_bebida || !tipopago || !propina || !numeromesa, estatus) {
         return res.status(400).json({ error: 'Todos los campos son requeridos para crear un pedido.' });
       }
   
       // Ejecuta la consulta SQL para insertar un nuevo pedido
       const result = await pool.query(
-        'INSERT INTO pedido (idcomanda, nombrecliente, alimentoconsumir, cantidad, bebida, cantidadbebida, status, tipopago, propina, correo) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *',
-        [idComanda, nombrecliente, alimentoconsumir, cantidad, bebida, cantidadbebida, status, tipopago, propina, correo]
+        'INSERT INTO pedido (alimentoconsumir, cantidad, precio_alimento, bebida, cantidad_bebida, precio_bebida, tipopago, propina, numeromesa, estatus) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *',
+        [alimentoconsumir, cantidad, precio_alimento, bebida, cantidad_bebida, precio_bebida, tipopago, propina, numeromesa, estatus]
       );
   
       // Devuelve el nuevo pedido creado en la respuesta

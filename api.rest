@@ -1,21 +1,34 @@
 ###
-GET http://localhost:4000/api/comandas
+GET http://localhost:4000/api/platillos
+
+###
+GET http://localhost:4000/api/pedidos
+
+###
+POST 
+
 ###
 POST http://localhost:4000/api/pedidos
 Content-Type: application/json
-
 {
-    "idcomanda": 2,
-    "nombrecliente": "Miguelito",
-    "alimentoconsumir": "Hamburguesita",
+
+    "alimentoconsumir": "Pizza",
     "cantidad": 2,
-    "bebida": "Limonada",
-    "cantidadbebida": 1,
-    "status": "Pendiente"
+    "precio_alimento": "20.99",
+    "bebida": "Coca Cola",
+    "cantidad_bebida": 3,
+    "precio_bebida": "2.50",
+    "tipopago": "Tarjeta",
+    "propina": "5.00",
+    "numeromesa": 1,
+    "estatus": "pendiente",
 }
 
 ###
-GET http://localhost:4000/api/pedidos/3
+GET http://localhost:4000/api/usuariossuarios
+
+###
+GET http://localhost:4000/api/usuarios
 
 ###
 PUT http://localhost:4000/api/pedidos/4
