@@ -2,13 +2,41 @@
 GET http://localhost:4000/api/platillos
 
 ###
+POST http://localhost:4000/api/employees
+Content-Type: application/json
+
+{
+    "id": "10",
+    "nombre_del_platillo": "Pan francés",
+    "descripcion_del_platillo": "...",
+    "precio": 35,
+    "categoria": "Desayuno"
+}
+
+
+###
+PUT http://localhost:4000/api/employees/6
+Content-Type: application/json
+
+{
+    "nombre_del_platillo": "Pan francés",
+    "descripcion_del_platillo": "Con jalea",
+    "precio": 35,
+    "categoria": "Desayuno"
+}
+
+###
+DELETE http://localhost:4000/api/employees/6
+
+
+###
 GET http://localhost:4000/api/pedidos
 
 ###
 POST 
 
 ###
-POST http://localhost:4000/api/pedidos
+POST http://localhost:4000/api/pedido
 Content-Type: application/json
 {
 
@@ -31,7 +59,7 @@ GET http://localhost:4000/api/usuariossuarios
 GET http://localhost:4000/api/usuarios
 
 ###
-PUT http://localhost:4000/api/pedidos/4
+PUT http://localhost:4000/api/pedidos
 Content-Type: application/json
 
 {
