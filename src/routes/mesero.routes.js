@@ -1,8 +1,14 @@
 const { Router } = require('express')
 const router = Router ()
 
-const meseroctrl = require('../controllers/mesero.controllers')
+const meseroCtrl = require('../controllers/mesero.controllers')
 
-router.get('/', meseroctrl.getMesero)
+router.get('/', meseroCtrl.getMesero)
+
+router.post('/', meseroCtrl.createMesero)
+
+router.put('/:id', meseroCtrl.editMesero)
+
+router.delete('/:id', meseroCtrl.deleteMesero)
 
 module.exports = router

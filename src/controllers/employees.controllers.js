@@ -2,6 +2,7 @@ const pool = require('../database');
 
 const employeesCtrl= {}
 
+
 employeesCtrl.getEmployees = async (req, res) => {
     try {
       const result = await pool.query('SELECT * FROM platillo'); // Reemplaza 'tu_tabla' con el nombre de tu tabla
@@ -14,26 +15,32 @@ employeesCtrl.getEmployees = async (req, res) => {
 
   employeesCtrl.createEmployee = async (req, res) => {
     try {
-      const { id, nombre_del_platillo, descripcion_del_platillo, precio, categoria } = req.body; // Asegúrate de tener los campos correctos
-  
-      // Verifica si los campos necesarios están presentes en la solicitud
-      if (!id || !nombre_del_platillo || !descripcion_del_platillo || !precio || !categoria) {
-        return res.status(400).send('id, nombre_del_platillo, descripcion_del_platillo, precio y categoria son campos requeridos.');
-      }
-  
-      // Ejecuta la consulta SQL para insertar un nuevo empleado
-      const result = await pool.query(
-        'INSERT INTO platillo (id, nombre_del_platillo, descripcion_del_platillo, precio, categoria) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-        [id, nombre_del_platillo, descripcion_del_platillo, precio, categoria]
-      );
-  
-      // Devuelve el nuevo empleado creado en la respuesta
-      res.json(result.rows[0]);
+        const { id, nombrePlatillo, descripcionPlatillo, precio, categoria } = req.body;
+
+        // Verificar la presencia de campos obligatorios
+        if (!id || !nombrePlatillo || !descripcionPlatillo || !precio || !categoria) {
+            return res.status(400).json({ error: 'id, nombrePlatillo, descripcionPlatillo, precio y categoria son campos requeridos.' });
+        }
+
+        // Verificar si el precio es un número positivo
+        if (typeof precio !== 'number' || precio <= 0) {
+            return res.status(400).json({ error: 'El precio debe ser un número positivo.' });
+        }
+
+        // Ejecutar la consulta SQL para insertar un nuevo empleado
+        const result = await pool.query(
+            'INSERT INTO platillo (id, nombre_del_platillo, descripcion_del_platillo, precio, categoria) VALUES ($1, $2, $3, $4, $5) RETURNING *',
+            [id, nombrePlatillo, descripcionPlatillo, precio, categoria]
+        );
+
+        // Devolver el nuevo empleado creado en la respuesta
+        res.status(201).json(result.rows[0]);
     } catch (error) {
-      console.error('Error al crear platillo', error);
-      res.status(500).send('Error interno del servidor');
+        console.error('Error al crear platillo:', error);
+        res.status(500).json({ error: 'Error interno del servidor' });
     }
-  };
+};
+
 
   employeesCtrl.getEmployee = async (req, res) => {
     try {
@@ -139,4 +146,7 @@ employeesCtrl.deleteEmployee = async (req, res) => {
   };
 
 
-module.exports = employeesCtrl
+
+
+
+module.exports = employeesCtrl 

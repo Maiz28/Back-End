@@ -1,24 +1,86 @@
 ###
-GET http://localhost:4000/api/platillos
+GET http://localhost:4000/api/usuario
+
+### 
+POST http://localhost:4000/api/usuario
+Content-Type: application/json
+
+{
+    "nombre": "Pedro",
+    "apellido": "Rojas",
+    "correo": "ppedro@example.com",
+    "contrasena": "clave123"
+}
+
+###
+GET http://localhost:4000/api/pedido
+
+### 
+POST http://localhost:4000/api/pedido
+Content-Type: application/json
+
+  {
+    "alimentoconsumir": "Hamburguesa",
+    "cantidad": 2,
+    "precioalimento": "10.50",
+    "bebida": "Refresco",
+    "cantidadbebida": 2,
+    "preciobebida": "3.00",
+    "tipopago": "Tarjeta",
+    "propina": "1.50",
+    "numeromesa": 5,
+    "estatus": "En proceso",
+    "fechapedido": "2024-02-17T06:00:00.000Z",
+    "horapedido": "17:37:53.599318",
+    "total": "27.00"
+  }
+
+
+### 
+PUT http://localhost:4000/api/pedido/3
+Content-Type: application/json
+
+  {
+    "alimentoconsumir": "chilaquiles verdes ",
+    "cantidad": 2,
+    "precioalimento": "10.50",
+    "bebida": "Refresco",
+    "cantidadbebida": 2,
+    "preciobebida": "3.00",
+    "tipopago": "Tarjeta",
+    "propina": "1.50",
+    "numeromesa": 5,
+    "estatus": "En proceso",
+    "fechapedido": "2024-02-17T06:00:00.000Z",
+    "horapedido": "17:37:53.599318",
+    "total": "27.00"
+  }
+###
+DELETE http://localhost:4000/api/pedido/3
+
+###
+GET http://localhost:4000/api/employees 
 
 ###
 POST http://localhost:4000/api/employees
 Content-Type: application/json
 
 {
-    "id": "10",
-    "nombre_del_platillo": "Pan francés",
-    "descripcion_del_platillo": "...",
-    "precio": 35,
-    "categoria": "Desayuno"
+    "id": 20,
+    "nombrePlatillo": "Nombre del Platillo",
+    "descripcionPlatillo": "Descripción del Platillo",
+    "precio": 10.99,
+    "categoria": "Categoria del Platillo"
 }
 
 
+
 ###
-PUT http://localhost:4000/api/employees/6
+PUT http://localhost:4000/api/employees/20
 Content-Type: application/json
 
 {
+    "id": 10,
     "nombre_del_platillo": "Pan francés",
     "descripcion_del_platillo": "Con jalea",
     "precio": 35,
@@ -26,50 +88,61 @@ Content-Type: application/json
 }
 
 ###
-DELETE http://localhost:4000/api/employees/6
-
-
-###
-GET http://localhost:4000/api/pedidos
+DELETE http://localhost:4000/api/employees/20
 
 ###
-POST 
+GET http://localhost:4000/api/mesero
 
 ###
-POST http://localhost:4000/api/pedido
-Content-Type: application/json
-{
-
-    "alimentoconsumir": "Pizza",
-    "cantidad": 2,
-    "precio_alimento": "20.99",
-    "bebida": "Coca Cola",
-    "cantidad_bebida": 3,
-    "precio_bebida": "2.50",
-    "tipopago": "Tarjeta",
-    "propina": "5.00",
-    "numeromesa": 1,
-    "estatus": "pendiente",
-}
-
-###
-GET http://localhost:4000/api/usuariossuarios
-
-###
-GET http://localhost:4000/api/usuarios
-
-###
-PUT http://localhost:4000/api/pedidos
+POST http://localhost:4000/api/mesero
 Content-Type: application/json
 
 {
-    "idcomanda": 1,
-    "nombrecliente": "Miguelito",
-    "alimentoconsumir": "Hamburguesita",
-    "cantidad": 2,
-    "bebida": "Beer",
-    "cantidadbebida": 1
+    "id": 6,
+    "nombre": "Pedro",
+    "email": "juan@example.com",
+    "edad": 25
 }
 
 ###
-DELETE http://localhost:4000/api/pedidos/11
+PUT http://localhost:4000/api/mesero/6
+Content-Type: application/json
+
+{
+    "nombre": "PEDRO",
+    "email": "juan@example.com",
+    "edad": 25
+}
+
+###
+DELETE  http://localhost:4000/api/mesero/6
+
+###
+GET http://localhost:4000/api/bebida
+
+###
+  POST http://localhost:4000/api/bebida
+Content-Type: application/json
+
+{
+    "id": 20,
+    "nombre_de_la_bebida": "Nombre del Platillo",
+    "descripcion_de_bebida": "Descripción del Platillo",
+    "precio": 10.99,
+    "categoria": "Categoria del Platillo"
+}
+
+###
+PUT http://localhost:4000/api/bebida/20
+Content-Type: application/json
+
+{
+    "nombre_de_la_bebida": "Pan francés",
+    "descripcion_de_bebida": "Con jalea",
+    "precio": 35,
+    "categoria": "Desayuno"
+}
+
+###
+DELETE  http://localhost:4000/api/bebida/20
+

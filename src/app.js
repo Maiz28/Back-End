@@ -12,18 +12,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false}));
 
 app.use("/api/employees", require('./routes/employes.routes'))
+app.use("/api/usuario", require ('./routes/usuarios.routes'))
+app.use("/api/pedido", require('./routes/pedido.routes'))
+app.use("/api/mesero", require('./routes/mesero.routes'))
+app.use("/api/bebida", require('./routes/bebida.routes'))
 
-app.use("/api/comandas", require('./routes/comandas.routes'))
-
-app.use("/api/pedidos", require('./routes/pedidos.routes'))
-
-app.use("/api/meseros", require('./routes/mesero.routes'))
-
-app.use("/api/ultima", require('./routes/ultima.routes'))
-
-app.use("/api/platillos", require('./routes/platillo.routes'))
-app.use("/api/bebidas", require('./routes/bebidas.routes'))
-app.use("/api/completo", require('./routes/completo.routes'))
-app.use("/api/pagos", require('./routes/pagos.routes'))
 
 module.exports = app;
