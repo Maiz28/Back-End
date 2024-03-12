@@ -15,11 +15,11 @@ employeesCtrl.getEmployees = async (req, res) => {
 
   employeesCtrl.createEmployee = async (req, res) => {
     try {
-        const { id, nombrePlatillo, descripcionPlatillo, precio, categoria } = req.body;
+        const { id, nombre_del_platillo, descripcion_del_platillo, precio, categoria } = req.body;
 
         // Verificar la presencia de campos obligatorios
-        if (!id || !nombrePlatillo || !descripcionPlatillo || !precio || !categoria) {
-            return res.status(400).json({ error: 'id, nombrePlatillo, descripcionPlatillo, precio y categoria son campos requeridos.' });
+        if (!id || !nombre_del_platillo || !descripcion_del_platillo || !precio || !categoria) {
+            return res.status(400).json({ error: 'id, nombre_del_platillo, descripcion_del_platillo, precio y categoria son campos requeridos.' });
         }
 
         // Verificar si el precio es un número positivo
@@ -30,7 +30,7 @@ employeesCtrl.getEmployees = async (req, res) => {
         // Ejecutar la consulta SQL para insertar un nuevo empleado
         const result = await pool.query(
             'INSERT INTO platillo (id, nombre_del_platillo, descripcion_del_platillo, precio, categoria) VALUES ($1, $2, $3, $4, $5) RETURNING *',
-            [id, nombrePlatillo, descripcionPlatillo, precio, categoria]
+            [id, nombre_del_platillo, descripcion_del_platillo, precio, categoria]
         );
 
         // Devolver el nuevo empleado creado en la respuesta

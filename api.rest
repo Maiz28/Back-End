@@ -37,7 +37,7 @@ Content-Type: application/json
 
 
 ### 
-PUT http://localhost:4000/api/pedido/3
+PUT http://localhost:4000/api/pedido/4
 Content-Type: application/json
 
   {
@@ -62,18 +62,16 @@ DELETE http://localhost:4000/api/pedido/3
 GET http://localhost:4000/api/employees 
 
 ###
-POST http://localhost:4000/api/employees
+POST http://localhost:4200/api/employees
 Content-Type: application/json
 
 {
-    "id": 20,
-    "nombrePlatillo": "Nombre del Platillo",
-    "descripcionPlatillo": "Descripción del Platillo",
-    "precio": 10.99,
-    "categoria": "Categoria del Platillo"
+    "id": 3286,
+    "nombre_del_platillo": "Pan francés",
+    "descripcion_del_platillo": "Con jalea",
+    "precio": 35,
+    "categoria": "Desayuno"
 }
-
-
 
 ###
 PUT http://localhost:4000/api/employees/20
