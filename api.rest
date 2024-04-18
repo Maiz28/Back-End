@@ -144,3 +144,23 @@ Content-Type: application/json
 ###
 DELETE  http://localhost:4000/api/bebida/20
 
+
+###
+POST  http://localhost:4000/api/user/register
+Content-Type: application/json
+
+{
+  "username": "marisol",
+  "email" : "marisol@gmail.com", 
+  "password": "12345",
+  "role":"admin"
+}
+
+###
+POST  http://localhost:4000/api/user/login
+Content-Type: application/json
+
+{
+  "email" : "marisol@gmail.com", 
+  "password": "12345"
+}
