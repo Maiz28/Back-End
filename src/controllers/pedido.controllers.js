@@ -15,16 +15,16 @@ pedidoCtrl.getPedido = async (req, res) => {
   // Agregar un pedido 
   pedidoCtrl.createPedido = async (req, res) => {
     try {
-        const { alimentoconsumir, cantidad, precioalimento, bebida, cantidadbebida, preciobebida, tipopago, propina, numeromesa, estatus, fechapedido, horapedido, total } = req.body;
+        const { alimentoconsumir, cantidad, precioalimento, bebida, cantidadbebida, preciobebida, tipopago, propina, numeromesa, estatus, total } = req.body;
 
-        if (!alimentoconsumir || !cantidad || !precioalimento || !bebida || !cantidadbebida || !preciobebida || !tipopago || !propina || !numeromesa || !estatus || !fechapedido || !horapedido || !total) {
-            return res.status(400).send('alimentoconsumir, cantidad, precioalimento, bebida, cantidadbebida, preciobebida, tipopago, propina, numeromesa, estatus, fechapedido, horapedido y total son campos requeridos.');
+        if (!alimentoconsumir || !cantidad || !precioalimento || !bebida || !cantidadbebida || !preciobebida || !tipopago || !propina || !numeromesa || !estatus || !total) {
+            return res.status(400).send('alimentoconsumir, cantidad, precioalimento, bebida, cantidadbebida, preciobebida, tipopago, propina, numeromesa, estatus y total son campos requeridos.');
         }
 
         const result = await pool.query(
-            'INSERT INTO pedido (alimentoconsumir, cantidad, precioalimento, bebida, cantidadbebida, preciobebida, tipopago, propina, numeromesa, estatus, fechapedido, horapedido, total) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *',
-            [alimentoconsumir, cantidad, precioalimento, bebida, cantidadbebida, preciobebida, tipopago, propina, numeromesa, estatus, fechapedido, horapedido, total]
-        );
+          'INSERT INTO pedido (alimentoconsumir, cantidad, precioalimento, bebida, cantidadbebida, preciobebida, tipopago, propina, numeromesa, estatus, total) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *',
+          [alimentoconsumir, cantidad, precioalimento, bebida, cantidadbebida, preciobebida, tipopago, propina, numeromesa, estatus, total]
+      );
 
         res.json(result.rows[0]);
     } catch (error) {

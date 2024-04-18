@@ -16,6 +16,7 @@ app.use("/api/usuario", require ('./routes/usuarios.routes'))
 app.use("/api/pedido", require('./routes/pedido.routes'))
 app.use("/api/mesero", require('./routes/mesero.routes'))
 app.use("/api/bebida", require('./routes/bebida.routes'))
+app.use("/api/user",require('./routes/user.routes'))
 
 
 module.exports = app;

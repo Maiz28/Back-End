@@ -5,7 +5,7 @@ const usuarioCtrl= {}
 
 usuarioCtrl.getUsuario = async (req, res) => {
     try {
-      const result = await pool.query('SELECT * FROM usuario'); // Reemplaza 'tu_tabla' con el nombre de tu tabla
+      const result = await pool.query('SELECT * FROM usuario'); 
       res.json(result.rows);
     } catch (error) {
       console.error('Error al obtener usuarios', error);
@@ -41,7 +41,7 @@ usuarioCtrl.getUsuario = async (req, res) => {
       res.status(500).send('Error al crear usuario');
     }
   };
-
+ 
 
 
 
