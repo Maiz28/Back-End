@@ -1,12 +1,9 @@
- const {Router} = require('express')
- const bcrypt = require('bcryptjs')
- const router = Router ()
+const { Router } = require("express");
+const router = Router();
+const userCtrl = require("../../src/controllers/user.controllers");
 
- const User = require('../../src/controllers/user.controllers')
-const userCtrl = require('../../src/controllers/user.controllers')
+//POST
+router.post("/register", userCtrl.createUser);
+router.post("/login", userCtrl.loginUser);
 
-//POST 
-router.post('/register', userCtrl.createUser)
-router.post('/login', userCtrl.loginUser)
-
-module.exports = router 
+module.exports = router;
