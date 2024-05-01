@@ -1,8 +1,8 @@
-const pool = require("../database"); // Asumiendo que 'pool' es una instancia de Pool de PostgreSQL
+const pool = require("../database");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const { token } = require("morgan");
-
+const speakeasy = require("speakeasy");
+const mailService = require("../mailer.service");
 const userCtrl = {};
 
 userCtrl.createUser = async (req, res) => {
@@ -85,91 +85,199 @@ userCtrl.loginUser = async (req, res) => {
 function createToken(user) {
   const payload = {
     id: user.id,
+    username: user.username,
+    email: user.email,
     role: user.role,
   };
-  return jwt.sign(payload, "en lugar de la mancha ");
-};
-
-// mmmmmmmmmiiiguueeellll
-
-const crypto = require("crypto");
-
-// Esta función generará un token único para el restablecimiento de contraseña
-function generateResetToken() {
-  return crypto.randomBytes(20).toString('hex');
+  return jwt.sign(payload, process.env.SECRETJWT, { expiresIn: 60 });
 }
 
-// Esta función almacenará el token de restablecimiento de contraseña en la base de datos
-async function saveResetToken(email, token) {
-  const saveTokenQuery = `
-    UPDATE users
-    SET reset_token = $1,
-        reset_token_expiry = NOW() + INTERVAL '1 hour' -- Aquí establecemos el tiempo de expiración del token
-    WHERE email = $2;
-  `;
-  const saveTokenValues = [token, email];
-  await pool.query(saveTokenQuery, saveTokenValues);
-}
-
-// Esta función será llamada desde user.routes.js para solicitar un restablecimiento de contraseña
-userCtrl.requestPasswordReset = async (req, res) => {
-  try {
-    const { email } = req.body;
-    
-    // Generar un token de restablecimiento de contraseña
-    const resetToken = generateResetToken();
-
-    // Almacenar el token de restablecimiento de contraseña en la base de datos
-    await saveResetToken(email, resetToken);
-
-    // Aquí deberías enviar un correo electrónico al usuario con el enlace para restablecer la contraseña, usando el token generado
-
-    res.status(200).json({ message: "Se ha enviado un correo electrónico con instrucciones para restablecer la contraseña" });
-  } catch (error) {
-    console.error("Error al solicitar restablecimiento de contraseña:", error);
-    res.status(500).json({ message: "Ocurrió un error al intentar solicitar el restablecimiento de contraseña" });
-  }
-};
-
-// Esta función permitirá al usuario restablecer la contraseña utilizando el token proporcionado
 userCtrl.resetPassword = async (req, res) => {
-  try {
-    const { email, token, newPassword } = req.body;
-    
-    // Verificar si el token de restablecimiento de contraseña es válido
-    const checkTokenQuery = `
-      SELECT reset_token, reset_token_expiry
-      FROM users
-      WHERE email = $1;
-    `;
-    const checkTokenValues = [email];
-    const tokenResult = await pool.query(checkTokenQuery, checkTokenValues);
+  const secret = speakeasy.generateSecret({ length: 20 });
+  const { correo } = req.body;
 
-    const userToken = tokenResult.rows[0].reset_token;
-    const tokenExpiry = new Date(tokenResult.rows[0].reset_token_expiry);
+  const respDb = await pool.query("SELECT email FROM users WHERE email = $1", [
+    correo,
+  ]);
 
-    if (token !== userToken || tokenExpiry < new Date()) {
-      return res.status(400).json({ message: "El token de restablecimiento de contraseña es inválido o ha expirado" });
+  if (respDb.rows.length > 0) {
+    if (respDb.rows[0].email === correo) {
+      const code = speakeasy.totp({
+        secret: secret.base32,
+        encoding: "base32",
+        time: 120,
+      });
+
+      mailService
+        .sendCode(correo, code)
+        .then(() => {
+          res
+            .status(200)
+            .json(
+              generarRespuesta(
+                0,
+                "Se envió correctamente el código a tu correo.",
+                secret.base32,
+                null
+              )
+            );
+        })
+        .catch((error) => {
+          console.log("Ocurrió un error en el sistema.", error);
+          res
+            .status(200)
+            .json(
+              generarRespuesta(
+                1,
+                "Ocurrio un error al enviar el código.",
+                null,
+                null
+              )
+            );
+        });
+    } else {
+      res
+        .status(200)
+        .json(
+          generarRespuesta(
+            1,
+            "El correo electronico no está registrado, verificalo y vuelve a intentarlo.",
+            correo,
+            null
+          )
+        );
     }
-
-    // Actualizar la contraseña del usuario en la base de datos
-    const hashedPassword = bcrypt.hashSync(newPassword, 10);
-    const updatePasswordQuery = `
-      UPDATE users
-      SET password = $1,
-          reset_token = null,
-          reset_token_expiry = null
-      WHERE email = $2;
-    `;
-    const updatePasswordValues = [hashedPassword, email];
-    await pool.query(updatePasswordQuery, updatePasswordValues);
-
-    res.status(200).json({ message: "La contraseña se ha restablecido exitosamente" });
-  } catch (error) {
-    console.error("Error al restablecer la contraseña:", error);
-    res.status(500).json({ message: "Ocurrió un error al intentar restablecer la contraseña" });
+  } else {
+    res
+      .status(200)
+      .json(
+        generarRespuesta(
+          1,
+          "El correo electronico no está registrado, verificalo y vuelve a intentarlo.",
+          correo,
+          null
+        )
+      );
   }
 };
 
+userCtrl.updatePassword = async (req, res) => {
+  const { correo, password } = req.body;
+
+  const user = await pool.query("SELECT password FROM users WHERE email = $1", [
+    correo,
+  ]);
+
+  const isEquals = await bcrypt.compare(password, user.rows[0].password);
+
+  if (isEquals) {
+    res
+      .status(500)
+      .json(
+        generarRespuesta(
+          1,
+          "La nueva contraseña no puede ser igual a la anterior.",
+          null,
+          null
+        )
+      );
+  } else {
+    const resp = await pool.query(
+      "UPDATE users SET password = $1 WHERE email = $2",
+      [bcrypt.hashSync(password, 10), correo]
+    );
+
+    if (resp) {
+      res
+        .status(200)
+        .json(
+          generarRespuesta(
+            0,
+            "Se reestablecio correctamente la contraseña",
+            null,
+            null
+          )
+        );
+    } else {
+      res
+        .status(500)
+        .json(
+          generarRespuesta(
+            1,
+            "Ocurrió un error al actualizar la contraseña.",
+            null,
+            null
+          )
+        );
+    }
+  }
+};
+
+userCtrl.validCode = (req, res) => {
+  const { codigo, secret } = req.body;
+
+  const tokenValidates = speakeasy.totp.verify({
+    secret: secret,
+    token: codigo,
+    encoding: "base32",
+    window: 6,
+    time: 120,
+  });
+
+  if (tokenValidates) {
+    res
+      .status(200)
+      .json(generarRespuesta(0, "Código validado correctamente.", null, null));
+  } else {
+    res.status(500).json(generarRespuesta(1, "Código invalido.", null, null));
+  }
+};
+
+userCtrl.secondFactor = (req, res) => {
+  const secret = speakeasy.generateSecret({ length: 20 });
+  const { correo } = req.body;
+  const code = speakeasy.totp({
+    secret: secret.base32,
+    encoding: "base32",
+    time: 120,
+  });
+
+  mailService
+    .secondFactor(correo, code)
+    .then(() => {
+      res
+        .status(200)
+        .json(
+          generarRespuesta(
+            0,
+            "Se envió correctamente un código a tu correo.",
+            secret.base32,
+            null
+          )
+        );
+    })
+    .catch((error) => {
+      console.log("Ocurrió un error en el sistema.", error);
+      res
+        .status(200)
+        .json(
+          generarRespuesta(
+            1,
+            "Ocurrio un error al enviar el código.",
+            null,
+            null
+          )
+        );
+    });
+};
+
+function generarRespuesta(estado, mensaje, objeto, token) {
+  return {
+    estado: estado,
+    mensaje: mensaje,
+    objeto: objeto,
+    token: token,
+  };
+}
 
 module.exports = userCtrl;
