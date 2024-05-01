@@ -5,9 +5,9 @@ const userCtrl = require("../../src/controllers/user.controllers");
 //POST
 router.post("/register", userCtrl.createUser);
 router.post("/login", userCtrl.loginUser);
-
-//restablecer contra
-router.put("/reset-password", userCtrl.resetPassword);
-router.post("/request-password-reset", userCtrl.requestPasswordReset);
+router.post("/sendCode", userCtrl.resetPassword);
+router.post("/validCode", userCtrl.validCode);
+router.put("/updatePassword", userCtrl.updatePassword);
+router.post("/secondFactor", userCtrl.secondFactor);
 
 module.exports = router;
