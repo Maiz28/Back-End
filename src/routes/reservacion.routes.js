@@ -9,6 +9,8 @@ router.post("/", reservacionesCtrl.createReservacion);
 
 router.get("/:id", reservacionesCtrl.getReservacion);
 
+router.get("/:idUser", reservacionesCtrl.getReservacionByUser);
+
 router.put("/:id", reservacionesCtrl.editReservacion);
 
 router.delete("/:id", reservacionesCtrl.deleteReservacion);
