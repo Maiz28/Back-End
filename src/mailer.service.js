@@ -5,6 +5,7 @@ async function enviarMail(correo, datos) {
   const config = {
     host: "smtp.gmail.com",
     port: 587,
+    secure: false,
     auth: {
       user: "mikeyjaime99@gmail.com",
       pass: "blyemhetcacieosr",
@@ -109,6 +110,7 @@ async function sendCode(correo, codigo) {
   const config = {
     host: "smtp.gmail.com",
     port: 587,
+    secure: false,
     auth: {
       user: "mikeyjaime99@gmail.com",
       pass: "blyemhetcacieosr",
@@ -166,9 +168,14 @@ async function secondFactor(correo, codigo) {
   const config = {
     host: "smtp.gmail.com",
     port: 587,
+    secure: false,
     auth: {
       user: "mikeyjaime99@gmail.com",
       pass: "blyemhetcacieosr",
+    },
+    tls: {
+      // do not fail on invalid certs
+      rejectUnauthorized: false,
     },
   };
 

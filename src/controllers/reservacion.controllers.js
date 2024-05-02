@@ -15,52 +15,50 @@ reservacionesCtrl.getReservaciones = async (req, res) => {
 
 // Crear una nueva reservación
 reservacionesCtrl.createReservacion = async (req, res) => {
-    try {
-      const {
-        fecha_reserva,
-        numero_mesa,
-        numero_personas,
-        descripcion,
-        id_usuario
-      } = req.body;
-  
-      // Obtener el ID del usuario que inició sesión
-  
-      // Verificar la presencia de campos obligatorios
-      if (!fecha_reserva || !numero_mesa || !numero_personas) {
-        return res.status(400).json({
-          error: "fecha_reserva, numero_mesa y numero_personas son campos requeridos."
-        });
-      }
-  
-      // Verificar si hay más de 3 reservaciones para la misma fecha
-      const countResult = await pool.query(
-        "SELECT COUNT(*) FROM reservaciones WHERE fecha_reserva = $1",
-        [fecha_reserva]
-      );
-      const count = parseInt(countResult.rows[0].count, 10);
-      if (count >= 3) {
-        return res.status(400).json({
-          error: "Ya hay 3 reservaciones para esta fecha."
-        });
-      }
-  
-      // Ejecutar la consulta SQL para insertar una nueva reservación
-      const result = await pool.query(
-        "INSERT INTO reservaciones (fecha_reserva, numero_mesa, numero_personas, descripcion, id_usuario) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-        [fecha_reserva, numero_mesa, numero_personas, descripcion, id_usuario]
-      );
-  
-      // Devolver la nueva reservación creada en la respuesta
-      res.status(201).json(result.rows[0]);
-    } catch (error) {
-      console.error("Error al crear reservación:", error);
-      res.status(500).json({ error: "Error interno del servidor" });
-    }
-  };
-  
-  
+  try {
+    const {
+      fecha_reserva,
+      numero_mesa,
+      numero_personas,
+      descripcion,
+      id_usuario,
+    } = req.body;
 
+    // Obtener el ID del usuario que inició sesión
+
+    // Verificar la presencia de campos obligatorios
+    if (!fecha_reserva || !numero_mesa || !numero_personas) {
+      return res.status(400).json({
+        error:
+          "fecha_reserva, numero_mesa y numero_personas son campos requeridos.",
+      });
+    }
+
+    // Verificar si hay más de 3 reservaciones para la misma fecha
+    const countResult = await pool.query(
+      "SELECT COUNT(*) FROM reservaciones WHERE fecha_reserva = $1",
+      [fecha_reserva]
+    );
+    const count = parseInt(countResult.rows[0].count, 10);
+    if (count >= 3) {
+      return res.status(400).json({
+        error: "Ya hay 3 reservaciones para esta fecha.",
+      });
+    }
+
+    // Ejecutar la consulta SQL para insertar una nueva reservación
+    const result = await pool.query(
+      "INSERT INTO reservaciones (fecha_reserva, numero_mesa, numero_personas, descripcion, id_usuario) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+      [fecha_reserva, numero_mesa, numero_personas, descripcion, id_usuario]
+    );
+
+    // Devolver la nueva reservación creada en la respuesta
+    res.status(201).json(result.rows[0]);
+  } catch (error) {
+    console.error("Error al crear reservación:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
+  }
+};
 
 // Obtener una reservación por su ID
 reservacionesCtrl.getReservacion = async (req, res) => {
@@ -73,9 +71,39 @@ reservacionesCtrl.getReservacion = async (req, res) => {
     }
 
     // Ejecutar la consulta SQL para obtener una reservación por su ID
-    const result = await pool.query("SELECT * FROM reservaciones WHERE id = $1", [
-      id,
-    ]);
+    const result = await pool.query(
+      "SELECT * FROM reservaciones WHERE id = $1",
+      [id]
+    );
+
+    // Verificar si se encontró una reservación con el ID proporcionado
+    if (result.rows.length === 0) {
+      return res.status(404).send("Reservación no encontrada.");
+    }
+
+    // Devolver la reservación encontrada en la respuesta
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.error("Error al obtener reservación", error);
+    res.status(500).send("Error interno del servidor");
+  }
+};
+
+// Obtener una reservación por Cliente
+reservacionesCtrl.getReservacionByUser = async (req, res) => {
+  try {
+    const { idUser } = req.params;
+
+    // Verificar si el ID está presente en la solicitud
+    if (!idUser) {
+      return res.status(400).send("ID de la reservación es requerido.");
+    }
+
+    // Ejecutar la consulta SQL para obtener una reservación por su ID
+    const result = await pool.query(
+      "SELECT * FROM reservaciones WHERE id_usuario = $1",
+      [idUser]
+    );
 
     // Verificar si se encontró una reservación con el ID proporcionado
     if (result.rows.length === 0) {
@@ -94,12 +122,8 @@ reservacionesCtrl.getReservacion = async (req, res) => {
 reservacionesCtrl.editReservacion = async (req, res) => {
   try {
     const { id } = req.params;
-    const {
-      fecha_reserva,
-      numero_mesa,
-      numero_personas,
-      descripcion
-    } = req.body;
+    const { fecha_reserva, numero_mesa, numero_personas, descripcion } =
+      req.body;
 
     // Verificar si el ID está presente en la solicitud
     if (!id) {
