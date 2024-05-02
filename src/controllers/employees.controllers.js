@@ -20,6 +20,7 @@ employeesCtrl.createEmployee = async (req, res) => {
       descripcion_del_platillo,
       precio,
       categoria,
+      url
     } = req.body;
 
     // Verificar la presencia de campos obligatorios
@@ -28,7 +29,8 @@ employeesCtrl.createEmployee = async (req, res) => {
       !nombre_del_platillo ||
       !descripcion_del_platillo ||
       !precio ||
-      !categoria
+      !categoria ||
+      !url
     ) {
       return res
         .status(400)
@@ -47,8 +49,8 @@ employeesCtrl.createEmployee = async (req, res) => {
 
     // Ejecutar la consulta SQL para insertar un nuevo empleado
     const result = await pool.query(
-      "INSERT INTO platillo (id, nombre_del_platillo, descripcion_del_platillo, precio, categoria) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-      [id, nombre_del_platillo, descripcion_del_platillo, precio, categoria]
+      "INSERT INTO platillo (id, nombre_del_platillo, descripcion_del_platillo, precio, categoria,url) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *",
+      [id, nombre_del_platillo, descripcion_del_platillo, precio, categoria, url]
     );
 
     // Devolver el nuevo empleado creado en la respuesta

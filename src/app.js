@@ -17,5 +17,6 @@ app.use("/api/pedido", require("./routes/pedido.routes"));
 app.use("/api/mesero", require("./routes/mesero.routes"));
 app.use("/api/bebida", require("./routes/bebida.routes"));
 app.use("/api/user", require("./routes/user.routes"));
+app.use("/api/reservacion", require("./routes/reservacion.routes"));
 
 module.exports = app;

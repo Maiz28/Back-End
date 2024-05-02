@@ -13,7 +13,7 @@ Content-Type: application/json
 }
 
 ###
-GET http://localhost:4000/api/pedido
+GET http://localhost:3200/api/pedido
 Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6ImFkbWluIiwiaWF0IjoxNzEzNDgyODEwfQ.XUkaR0aytDYvu2QxtkPREueYt8DhvQkh04C-Swws1yE
 
 ### 
@@ -60,7 +60,7 @@ Content-Type: application/json
 DELETE http://localhost:4000/api/pedido/3
 
 ###
-GET http://localhost:4000/api/employees 
+GET http://localhost:3200/api/employees 
 
 ###
 POST http://localhost:4200/api/employees
@@ -120,7 +120,7 @@ DELETE  http://localhost:4000/api/mesero/6
 GET http://localhost:4000/api/bebida
 
 ###
-  POST http://localhost:4000/api/bebida
+  POST http://localhost:3200/api/bebida
 Content-Type: application/json
 
 {
@@ -129,6 +129,31 @@ Content-Type: application/json
     "descripcion_de_bebida": "Descripción del Platillo",
     "precio": 10.99,
     "categoria": "Categoria del Platillo"
+}
+
+###
+POST http://localhost:3200/api/reservacion
+Content-Type: application/json
+
+{
+        "fecha_reserva": "2024-05-10",
+        "numero_mesa": 5,
+        "numero_personas": 4,
+        "descripcion": "Aniversario",
+        "id_usuario": 1
+}
+
+###
+PUT http://localhost:3200/api/reservacion
+Content-Type: application/json
+
+{
+        "fecha_reserva": "2024-05-10",
+        "numero_mesa": 5,
+        "numero_personas": 4,
+        "descripcion": "Aniversario",
+      
+
 }
 
 ###
